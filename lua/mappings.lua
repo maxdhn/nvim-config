@@ -38,12 +38,6 @@ map(
   ":Telescope live_grep hidden=true<CR>",
   { desc = "Live Grep (include hidden files)", noremap = true, silent = true }
 )
-map(
-  "n",
-  "<leader>fl",
-  ':lua require("custom.telescope_browser_grep").live_grep_in_folder()<CR>',
-  { desc = "Livre Grep in", noremap = true, silent = true }
-)
 
 -- BUFFER
 vim.api.nvim_del_keymap("n", "<leader>b")
