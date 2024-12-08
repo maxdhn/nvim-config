@@ -1,5 +1,13 @@
 return {
   {
+    "nvim-tree/nvim-tree.lua",
+    cmd = { "NvimTreeToggle", "NvimTreeFocus" },
+    opts = function()
+      local config = require "configs.nvimtree"
+      return config.options()
+    end,
+  },
+  {
     "nvim-telescope/telescope-file-browser.nvim",
     lazy = false,
     dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },

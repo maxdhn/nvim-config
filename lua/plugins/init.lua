@@ -5,6 +5,7 @@ local plugin_files = {
   "plugins.file_explorer",
   "plugins.git",
   "plugins.session",
+  "plugins.telescope",
   "plugins.db",
   "plugins.ai",
   "plugins.diagnostic",

@@ -23,22 +23,6 @@ map(
   { noremap = true, silent = true, desc = "Toggle between source and test file" }
 )
 
--- TELESCOPE
-vim.api.nvim_del_keymap("n", "<leader>fa")
-vim.api.nvim_del_keymap("n", "<leader>fh")
-map(
-  "n",
-  "<leader>fF",
-  ":Telescope find_files hidden=true<CR>",
-  { desc = "Find files (include hidden files)", noremap = true, silent = true }
-)
-map(
-  "n",
-  "<leader>fW",
-  ":Telescope live_grep hidden=true<CR>",
-  { desc = "Live Grep (include hidden files)", noremap = true, silent = true }
-)
-
 -- BUFFER
 vim.api.nvim_del_keymap("n", "<leader>b")
 map(

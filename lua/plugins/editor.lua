@@ -18,28 +18,10 @@ return {
     },
   },
   {
-    "Pocco81/true-zen.nvim",
-    cmd = { "TZAtaraxis", "TZMinimalist", "TZFocus" },
-    config = function()
-      require("true-zen").setup {}
-    end,
-  },
-  {
     "ThePrimeagen/refactoring.nvim",
     event = "BufReadPost",
     config = function()
       require("refactoring").setup {}
-    end,
-  },
-  {
-    "bennypowers/nvim-regexplainer",
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-      "MunifTanjim/nui.nvim",
-    },
-    event = "BufReadPost",
-    config = function()
-      require("regexplainer").setup {}
     end,
   },
   {
@@ -135,10 +117,17 @@ return {
   },
   {
     "Wansmer/treesj",
-    cmd = { "TSJToggle" },
-    opts = { use_default_keymaps = false },
+    opts = { use_default_keymaps = false, max_join_length = 9000 },
     keys = {
       { "ts", "<CMD>TSJToggle<CR>", desc = "Toggle Treesitter Join/Split", mode = "n" },
+    },
+  },
+  {
+    "machakann/vim-sandwich",
+    keys = {
+      { "sa", mode = { "n", "x" } },
+      { "sd", mode = { "n", "x" } },
+      { "sr", mode = { "n", "x" } },
     },
   },
 }

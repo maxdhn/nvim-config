@@ -6,8 +6,18 @@ return {
       { "<C-u>", desc = "Scroll up", mode = "n" },
     },
     opts = {
+      -- You can list the mappings you want animated here
       mappings = { "<C-u>", "<C-d>" },
     },
+    config = function(_, opts)
+      require("neoscroll").setup(opts)
+
+      local t = {}
+      t["<C-u>"] = { "scroll", { "-5", "true", "100" } }
+      t["<C-d>"] = { "scroll", { "5", "true", "100" } }
+
+      require("neoscroll.config").set_mappings(t)
+    end,
   },
   {
     "smoka7/hop.nvim",
