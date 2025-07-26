@@ -98,6 +98,7 @@ return {
       { "gI", "<cmd>lua vim.lsp.buf.implementation()<CR>", desc = "Implementation", noremap = true, silent = true },
       { "grr", ":Telescope lsp_references<CR>", desc = "References", noremap = true, silent = true },
       { "<leader>lR", ":Telescope lsp_references<CR>", desc = "References", noremap = true, silent = true },
+      { "gr.", ":Telescope resume<CR>", desc = "Resume Last Telescope", noremap = true, silent = true },
       {
         "<leader>ls",
         ":Telescope lsp_document_symbols<CR>",
