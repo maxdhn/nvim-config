@@ -96,8 +96,8 @@ return {
       { "gy", "<cmd>lua vim.lsp.buf.type_definition()<CR>", desc = "Type Definition", noremap = true, silent = true },
       { "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", desc = "Definition", noremap = true, silent = true },
       { "gI", "<cmd>lua vim.lsp.buf.implementation()<CR>", desc = "Implementation", noremap = true, silent = true },
-      { "grr", "<cmd>lua vim.lsp.buf.references()<CR>", desc = "References", noremap = true, silent = true },
-      { "<leader>lR", "<cmd>lua vim.lsp.buf.references()<CR>", desc = "References", noremap = true, silent = true },
+      { "grr", ":Telescope lsp_references<CR>", desc = "References", noremap = true, silent = true },
+      { "<leader>lR", ":Telescope lsp_references<CR>", desc = "References", noremap = true, silent = true },
       {
         "<leader>ls",
         ":Telescope lsp_document_symbols<CR>",
