@@ -59,6 +59,8 @@ return {
       { "<leader>gb", ":Telescope git_branches<CR>", desc = "Git Branches", noremap = true, silent = true },
       { "<leader>gc", ":Telescope git_commits<CR>", desc = "Git Commits (repository)", noremap = true, silent = true },
       { "<leader>gC", ":Telescope git_bcommits<CR>", desc = "Git Commits (current file)", noremap = true, silent = true },
+      { "]h", ":lua require('gitsigns').next_hunk()<CR>", desc = "Next Git Hunk", noremap = true, silent = true },
+      { "[h", ":lua require('gitsigns').prev_hunk()<CR>", desc = "Previous Git Hunk", noremap = true, silent = true },
     },
   },
 }
