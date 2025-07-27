@@ -27,6 +27,14 @@ return {
         silent = true,
         mode = "n",
       },
+      {
+        "<leader>fj",
+        ":Telescope jumplist<CR>",
+        desc = "Jump List",
+        noremap = true,
+        silent = true,
+        mode = "n",
+      },
     },
   },
 }

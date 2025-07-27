@@ -1,5 +1,15 @@
 return {
   {
+    "kwkarlwang/bufjump.nvim",
+    config = function()
+      require("bufjump").setup({
+        forward_key = "<C-i>",
+        backward_key = "<C-o>",
+        on_success = nil
+      })
+    end,
+  },
+  {
     "karb94/neoscroll.nvim",
     keys = {
       { "<C-d>", desc = "Scroll down", mode = "n" },
