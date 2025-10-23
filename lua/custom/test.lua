@@ -1,59 +1,102 @@
 local M = {}
 
 function M.toggle_source_test()
-  local current_path = vim.fn.expand "%:p" -- Get the current full file path
-  local current_dir = vim.fn.expand "%:p:h" -- Get the current directory
-  local filename = vim.fn.expand "%:t" -- Get the file name with extension
-  local file_base = vim.fn.expand "%:t:r" -- Get the base name without extension or paths
+  local filename = vim.fn.expand "%:t:r" -- Get the base name without extension
   local file_ext = vim.fn.expand "%:e" -- Get the file extension
-
-  -- Determine if current file is a test file and construct target file patterns
-  local target_patterns
-  if filename:find("test", 1, true) then
-    -- Current file is a test file, remove test indicators to find source
-    target_patterns = {
-      file_base:gsub("%.test$", ""),
-      file_base:gsub("_test$", ""),
-    }
-    -- Append extension if present
-    for i, pattern in ipairs(target_patterns) do
-      if file_ext ~= "" then
-        target_patterns[i] = pattern .. "." .. file_ext
-      end
-    end
+  local current_file = vim.fn.expand "%:t" -- Get the current file name with extension
+  
+  -- Check if current file is a test file (contains 'test' or 'spec')
+  local is_test_file = current_file:lower():find("test") or current_file:lower():find("spec")
+  
+  -- Build search pattern
+  local pattern
+  if is_test_file then
+    -- Remove test/spec indicators to find source file
+    local base_name = filename:gsub("[._-]?test$", ""):gsub("[._-]?spec$", "")
+    pattern = base_name .. "." .. file_ext
   else
-    -- Current file is a source file, add test indicators to find test
-    target_patterns = { file_base .. ".test", file_base .. "_test" }
-    -- Append extension if present
-    for i, pattern in ipairs(target_patterns) do
-      if file_ext ~= "" then
-        target_patterns[i] = pattern .. "." .. file_ext
+    -- Find test files with same base name
+    pattern = "*" .. filename .. "*"
+  end
+  
+  -- Search for matching files in the project
+  local found_files = vim.fn.globpath(vim.fn.getcwd(), "**/" .. pattern, false, true)
+  
+  -- Filter results based on whether we're looking for test or source files
+  local filtered_files = {}
+  for _, file in ipairs(found_files) do
+    local file_name = vim.fn.fnamemodify(file, ":t")
+    local has_test_or_spec = file_name:lower():find("test") or file_name:lower():find("spec")
+    
+    if is_test_file then
+      -- Looking for source file (no test/spec in name)
+      if not has_test_or_spec then
+        table.insert(filtered_files, file)
+      end
+    else
+      -- Looking for test file (has test/spec in name)
+      if has_test_or_spec then
+        table.insert(filtered_files, file)
       end
     end
   end
-
-  -- Function to find files based on patterns in the current directory and project
-  local function find_files(patterns)
-    for _, pattern in ipairs(patterns) do
-      -- Check the current directory first
-      local found_files = vim.fn.globpath(current_dir, pattern, false, true)
-      if vim.tbl_isempty(found_files) then
-        -- If not found, search the entire project directory
-        found_files = vim.fn.globpath(vim.fn.getcwd(), "**/" .. pattern, false, true)
-      end
-      if not vim.tbl_isempty(found_files) then
-        return found_files[1] -- Return the first match found
-      end
-    end
-    return nil
-  end
-
-  -- Attempt to find the target file
-  local target_file = find_files(target_patterns)
-  if target_file then
-    vim.cmd("edit " .. target_file)
+  
+  -- Handle results
+  if #filtered_files == 0 then
+    print "No corresponding file found."
+  elseif #filtered_files == 1 then
+    vim.cmd("edit " .. filtered_files[1])
   else
-    print "Corresponding file does not exist."
+    -- Try to use Telescope if available, otherwise fallback to vim.ui.select
+    local ok, telescope = pcall(require, "telescope")
+    
+    if ok then
+      -- Use Telescope for file selection with preview
+      local pickers = require("telescope.pickers")
+      local finders = require("telescope.finders")
+      local conf = require("telescope.config").values
+      local actions = require("telescope.actions")
+      local action_state = require("telescope.actions.state")
+      local previewers = require("telescope.previewers")
+      
+      pickers.new({}, {
+        prompt_title = is_test_file and "Select Source File" or "Select Test File",
+        finder = finders.new_table {
+          results = filtered_files,
+          entry_maker = function(entry)
+            return {
+              value = entry,
+              display = vim.fn.fnamemodify(entry, ":~:."),
+              ordinal = vim.fn.fnamemodify(entry, ":~:."),
+            }
+          end,
+        },
+        sorter = conf.file_sorter({}),
+        previewer = previewers.vim_buffer_cat.new({}),
+        attach_mappings = function(prompt_bufnr, map)
+          actions.select_default:replace(function()
+            actions.close(prompt_bufnr)
+            local selection = action_state.get_selected_entry()
+            if selection then
+              vim.cmd("edit " .. selection.value)
+            end
+          end)
+          return true
+        end,
+      }):find()
+    else
+      -- Fallback to vim.ui.select
+      vim.ui.select(filtered_files, {
+        prompt = "Select file:",
+        format_item = function(item)
+          return vim.fn.fnamemodify(item, ":~:.")
+        end,
+      }, function(choice)
+        if choice then
+          vim.cmd("edit " .. choice)
+        end
+      end)
+    end
   end
 end
 
