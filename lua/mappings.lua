@@ -25,24 +25,21 @@ map(
 
 -- BUFFER
 vim.api.nvim_del_keymap("n", "<leader>b")
-map(
-  "n",
-  "<leader>bc",
-  ':lua require("nvchad.tabufline").closeAllBufs(false)<CR>',
-  { desc = "Close all buffers except the current", noremap = true, silent = true }
-)
-map(
-  "n",
-  "<leader>bl",
-  ':lua require("nvchad.tabufline").closeBufs_at_direction("left")<CR>',
-  { desc = "Close all buffers to the left", noremap = true, silent = true }
-)
-map(
-  "n",
-  "<leader>br",
-  ':lua require("nvchad.tabufline").closeBufs_at_direction("right")<CR>',
-  { desc = "Close all buffers to the right", noremap = true, silent = true }
-)
+map("n", "<leader>bc", function()
+  vim.schedule(function()
+    require("nvchad.tabufline").closeAllBufs(false)
+  end)
+end, { desc = "Close all buffers except the current", noremap = true, silent = true })
+map("n", "<leader>bl", function()
+  vim.schedule(function()
+    require("nvchad.tabufline").closeBufs_at_direction("left")
+  end)
+end, { desc = "Close all buffers to the left", noremap = true, silent = true })
+map("n", "<leader>br", function()
+  vim.schedule(function()
+    require("nvchad.tabufline").closeBufs_at_direction("right")
+  end)
+end, { desc = "Close all buffers to the right", noremap = true, silent = true })
 map("n", "<leader>bh", ":split<CR>", { desc = "Horizontal Split", noremap = true, silent = true })
 map("n", "<leader>bv", ":vsplit<CR>", { desc = "Vertical Split", noremap = true, silent = true })
 map("n", "<leader>q", ":close<CR>", { desc = "Close Split", noremap = true, silent = true })
