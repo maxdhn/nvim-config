@@ -123,6 +123,11 @@ return {
     },
   },
   {
+    "sphamba/smear-cursor.nvim",
+    event = "VeryLazy",
+    opts = {},
+  },
+  {
     "machakann/vim-sandwich",
     keys = {
       { "sa", mode = { "n", "x" } },
