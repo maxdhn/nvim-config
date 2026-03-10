@@ -14,6 +14,7 @@ local plugin_files = {
   "plugins.workflow",
   "plugins.comment",
   "plugins.debugger",
+  "plugins.notes",
   -- "plugins.proxy",
 }
 
