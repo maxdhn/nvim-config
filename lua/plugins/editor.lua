@@ -135,4 +135,14 @@ return {
       { "sr", mode = { "n", "x" } },
     },
   },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = {
+      ensure_installed = {
+        "lua", "luadoc", "printf", "vim", "vimdoc",
+        "svelte", "typescript", "tsx", "javascript",
+        "html", "css", "json",
+      },
+    },
+  },
 }

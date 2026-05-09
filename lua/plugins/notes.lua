@@ -22,14 +22,19 @@ return {
   {
     "MeanderingProgrammer/render-markdown.nvim",
     ft = { "markdown" },
-    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+    dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = {},
   },
 
   {
-    "folke/snacks.nvim",
+    "3rd/image.nvim",
+    ft = { "markdown" },
+    event = "BufReadCmd",
     opts = {
-      image = { enabled = true },
+      backend = "ueberzug",
+      integrations = {
+        markdown = { enabled = true },
+      },
     },
   },
 }
