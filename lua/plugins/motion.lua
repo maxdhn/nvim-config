@@ -12,22 +12,27 @@ return {
   {
     "karb94/neoscroll.nvim",
     keys = {
-      { "<C-d>", desc = "Scroll down", mode = "n" },
-      { "<C-u>", desc = "Scroll up", mode = "n" },
+      {
+        "<C-d>",
+        function()
+          require("neoscroll").scroll(5, { move_cursor = true, duration = 100 })
+        end,
+        desc = "Scroll down",
+        mode = "n",
+      },
+      {
+        "<C-u>",
+        function()
+          require("neoscroll").scroll(-5, { move_cursor = true, duration = 100 })
+        end,
+        desc = "Scroll up",
+        mode = "n",
+      },
     },
     opts = {
-      -- You can list the mappings you want animated here
-      mappings = { "<C-u>", "<C-d>" },
+      -- Custom mappings are defined in `keys` above, so don't set the defaults
+      mappings = {},
     },
-    config = function(_, opts)
-      require("neoscroll").setup(opts)
-
-      local t = {}
-      t["<C-u>"] = { "scroll", { "-5", "true", "100" } }
-      t["<C-d>"] = { "scroll", { "5", "true", "100" } }
-
-      require("neoscroll.config").set_mappings(t)
-    end,
   },
   {
     "smoka7/hop.nvim",
