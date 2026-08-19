@@ -1,49 +1,83 @@
 return {
   {
-    "williamboman/mason.nvim",
-    opts = {
-      ensure_installed = {
-        "ansible-language-server",
-        "arduino-language-server",
-        "bash-language-server",
-        "cmake-language-server",
-        "css-lsp",
-        "cssmodules-language-server",
-        "css-variables-language-server",
-        "custom-elements-languageserver",
-        "deno",
-        "dockerfile-language-server",
-        "docker-compose-language-service",
-        "eslint_d",
-        "emmet-ls",
-        "graphql-language-service-cli",
-        "html-lsp",
-        "java-language-server",
-        "json-lsp",
-        "lua-language-server",
-        "markdown-oxide",
-        "nginx-language-server",
-        "prettierd",
-        "biome",
-        "stylelint",
-        "stylelint-lsp",
-        -- "pgsql-language-server",
-        "python-lsp-server",
-        "rust-analyzer",
-        "sqlfmt",
-        "sqlls",
-        "stylua",
-        "svelte-language-server",
-        "tailwindcss-language-server",
-        "terraform-ls",
-        "yaml-language-server",
-        "typescript-language-server",
-        "vim-language-server",
-        "write-good",
-        "js-debug-adapter",
-      },
-    },
+    -- The repo moved to mason-org/; NvChad already declares it under that
+    -- name, so use the same one to avoid two specs fighting over the clone.
+    "mason-org/mason.nvim",
+    cmd = { "Mason", "MasonInstall", "MasonUpdate", "MasonUninstall", "MasonLog" },
+    opts = {},
   },
+
+  {
+    -- mason.nvim itself has NO `ensure_installed` option -- a list passed to
+    -- it is silently ignored. This plugin is what actually installs things.
+    -- Names below are mason *package* names (`:Mason` shows them), which are
+    -- not always the lspconfig server name used in configs/lspconfig.lua.
+    -- Debug adapters are handled separately by mason-nvim-dap in
+    -- plugins/debugger.lua, so they do not belong here.
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    dependencies = { "mason-org/mason.nvim" },
+    event = "VeryLazy",
+    config = function()
+      require("mason-tool-installer").setup {
+        ensure_installed = {
+          -- Language servers
+          "ansible-language-server",
+          "arduino-language-server",
+          "bash-language-server",
+          "cmake-language-server",
+          "css-lsp",
+          "css-variables-language-server",
+          "cssmodules-language-server",
+          "custom-elements-languageserver",
+          "docker-compose-language-service",
+          "dockerfile-language-server",
+          "emmet-ls",
+          "graphql-language-service-cli",
+          "html-lsp",
+          "java-language-server",
+          "json-lsp",
+          "lua-language-server",
+          "markdown-oxide",
+          "nginx-language-server",
+          "postgres-language-server", -- provides `postgres_lsp`
+          "python-lsp-server",
+          "rust-analyzer",
+          "sqlls",
+          "stylelint-lsp",
+          "svelte-language-server",
+          "tailwindcss-language-server",
+          "terraform-ls",
+          "typescript-language-server",
+          "vim-language-server",
+          "yaml-language-server",
+
+          -- Formatters
+          "biome",
+          "prettierd",
+          "sqlfmt",
+          "stylua",
+
+          -- Linters
+          "eslint_d",
+          "stylelint",
+          "write-good",
+      },
+        -- `run_on_start` is driven by a VimEnter autocmd in the plugin's
+        -- plugin/ directory, which never fires for a lazy-loaded plugin.
+        -- We trigger the check ourselves below instead.
+        run_on_start = false,
+        -- Only install what is missing; upgrading is a deliberate
+        -- :MasonToolsUpdate, not something that happens under you at startup.
+        auto_update = false,
+      }
+
+      -- Deferred so installing never blocks the first buffer.
+      vim.defer_fn(function()
+        require("mason-tool-installer").check_install(false)
+      end, 2000)
+    end,
+  },
+
   {
     "neovim/nvim-lspconfig",
     config = function()
