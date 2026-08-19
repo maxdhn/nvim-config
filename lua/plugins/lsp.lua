@@ -79,6 +79,29 @@ return {
   },
 
   {
+    -- Symbol outline sidebar. Prefers LSP symbols, falls back to treesitter
+    -- so it still works in files with no server attached.
+    "stevearc/aerial.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+    cmd = { "AerialToggle", "AerialOpen", "AerialNavToggle" },
+    opts = {
+      backends = { "lsp", "treesitter", "markdown", "man" },
+      layout = { min_width = 30, default_direction = "right", placement = "edge" },
+      -- Keep the outline pointed at whatever window you are editing in.
+      attach_mode = "global",
+      show_guides = true,
+      -- Show every symbol kind rather than aerial's default subset: with
+      -- NestJS the injected properties and fields are half the story.
+      -- Narrow this to a list of kinds if it gets noisy.
+      filter_kind = false,
+    },
+    keys = {
+      { "<leader>lo", "<cmd>AerialToggle!<cr>", desc = "Outline (Aerial)" },
+      { "<leader>ln", "<cmd>AerialNavToggle<cr>", desc = "Outline Nav (Aerial)" },
+    },
+  },
+
+  {
     "neovim/nvim-lspconfig",
     config = function()
       require "configs.lspconfig"
@@ -117,13 +140,6 @@ return {
         silent = true,
       },
       { "<leader>lr", "<cmd>lua vim.lsp.buf.rename()<CR>", desc = "Rename", noremap = true, silent = true },
-      {
-        "<leader>lG",
-        "<cmd>lua vim.lsp.buf.workspace_symbol()<CR>",
-        desc = "Workspace Symbols",
-        noremap = true,
-        silent = true,
-      },
       { "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>", desc = "Next Diagnostic", noremap = true, silent = true },
       { "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>", desc = "Previous Diagnostic", noremap = true, silent = true },
       { "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", desc = "Declaration", noremap = true, silent = true },
@@ -146,6 +162,26 @@ return {
         desc = "LSP Workspace Symbols",
         noremap = true,
         silent = true,
+      },
+
+      -- Call hierarchy: "who calls this" / "what does this reach".
+      { "<leader>lci", "<cmd>Telescope lsp_incoming_calls<CR>", desc = "Incoming Calls" },
+      { "<leader>lco", "<cmd>Telescope lsp_outgoing_calls<CR>", desc = "Outgoing Calls" },
+
+      -- Type hierarchy: no Telescope picker exists, these fill the quickfix list.
+      {
+        "<leader>lt",
+        function()
+          vim.lsp.buf.typehierarchy "subtypes"
+        end,
+        desc = "Subtypes",
+      },
+      {
+        "<leader>lT",
+        function()
+          vim.lsp.buf.typehierarchy "supertypes"
+        end,
+        desc = "Supertypes",
       },
     },
   },

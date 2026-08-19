@@ -136,6 +136,28 @@ return {
     },
   },
   {
+    -- Sticky header showing the enclosing function/class while you scroll.
+    "nvim-treesitter/nvim-treesitter-context",
+    event = "User FilePost",
+    opts = {
+      max_lines = 3, -- keep the header small; deep nesting eats the window
+      multiline_threshold = 1, -- collapse long signatures to one line
+      trim_scope = "outer", -- when over max_lines, drop the outermost scope
+      mode = "cursor",
+      separator = "\u{2500}",
+    },
+    keys = {
+      {
+        "<leader>lk",
+        function()
+          require("treesitter-context").go_to_context(vim.v.count1)
+        end,
+        desc = "Jump to Context",
+      },
+    },
+  },
+
+  {
     "nvim-treesitter/nvim-treesitter",
     opts = {
       ensure_installed = {
